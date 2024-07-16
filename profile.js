@@ -9,11 +9,14 @@ function findProfileById(id) {
 // Create a new profile
 const newProfile = async (req, res) => {
   const { name, address, numberTelepon } = req.body;
+  const userId = req.user.userId; // ID pengguna dari token yang telah diverifikasi
+
   
   // Create an insert query
   const insertQuery =
-    "INSERT INTO profile (name, address, number_telepon) VALUES ($1, $2, $3) RETURNING *";
-  const values = [name, address, numberTelepon ];
+    "INSERT INTO profile (name, address, number_telepon, created_by) VALUES ($1, $2, $3, $4) RETURNING *";
+  const values = [name, address, numberTelepon, userId ];
+  
 
   // Execute the insert query
   try {
@@ -76,10 +79,11 @@ const getProfile = async (req, res) => {
 const updateProfile = async (req, res) => {
   const id = req.params.id;
   const { name, address, numberTelepon } = req.body;
+  const userId = req.user.userId; // ID pengguna dari token yang telah diverifikasi
   // Create an update query
   const updateQuery =
-    "UPDATE profile SET name = $1, address = $2, number_telepon = $3 WHERE id = $4";
-  const values = [name, address, numberTelepon, id];
+    "UPDATE profile SET name = $1, address = $2, number_telepon = $3, updated_by = $4 WHERE id = $5";
+  const values = [name, address, numberTelepon, userId, id];
 
   // Execute the update query
   try {

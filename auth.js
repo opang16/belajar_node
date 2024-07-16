@@ -1,13 +1,11 @@
-// routes/auth.js
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const db = require('./db');
-
+require('dotenv').config();
 
 // Signup
 const signup = async (req, res) => {
   try {
-    console.log(req.body)
     const { username, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
     
@@ -38,7 +36,7 @@ const login = async (req, res) => {
       return res.status(401).json({ error: 'Invalid password' });
     }
 
-    const token = jwt.sign({ userId: user.rows[0].id }, 'your_secret_key');
+    const token = jwt.sign({ userId: user.rows[0].id }, process.env.JWT_SECRET, { expiresIn: '1h' });
     res.json({ message: 'Login successful', token });
   } catch (error) {
     console.error('Error logging in:', error);
@@ -46,4 +44,4 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = {signup, login};
+module.exports = { signup, login };

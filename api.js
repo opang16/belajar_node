@@ -1,14 +1,19 @@
-
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 const authenticateUser = (req, res, next) => {
-  const token = req.header('Authorization');
+  const authHeader = req.header('Authorization');
+  if (!authHeader) {
+    return res.status(401).json({ error: 'Access denied' });
+  }
+
+  const token = authHeader.split(' ')[1];
   if (!token) {
     return res.status(401).json({ error: 'Access denied' });
   }
 
   try {
-    const decoded = jwt.verify(token, 'your_secret_key');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
     next();
   } catch (error) {
@@ -20,4 +25,4 @@ const protected = async (req, res) => {
   res.json({ message: 'Protected API accessed successfully', user: req.user });
 };
 
-module.exports = {authenticateUser, protected};
+module.exports = { authenticateUser, protected };
