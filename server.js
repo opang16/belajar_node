@@ -36,7 +36,7 @@ router.post("/pola", authenticateUser, addPola);
 router.get("/pola", authenticateUser, getPola);
 
 // protected route example
-router.get("/api/protected", authenticateUser, protected);
+//router.get("/api/protected", authenticateUser, protected);
 
 app.use(router);
 

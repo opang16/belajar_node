@@ -40,11 +40,12 @@ const searchKain = async (req, res) => {
 // Fungsi API untuk menambahkan kain
 const addKain = async (req, res) => {
   const { nama, idKetebalan, idPola } = req.body;
+  const userId = req.user.userId; // ID pengguna dari token yang telah diverifikasi
 
   // Create an insert query
   const insertQuery =
-    "INSERT INTO kain (nama, id_ketebalan, id_pola) VALUES ($1, $2, $3) RETURNING *";
-  const values = [nama, idKetebalan, idPola];
+    "INSERT INTO kain (nama, id_ketebalan, id_pola , created_by) VALUES ($1, $2, $3,$4) RETURNING *";
+  const values = [nama, idKetebalan, idPola, userId];
 
   // Execute the insert query
   try {
@@ -66,13 +67,14 @@ const addKain = async (req, res) => {
 // Fungsi API untuk menambahkan ketebalan
 const addKetebalan = async (req, res) => {
   const { nama } = req.body;
+  const userId = req.user.userId; // ID pengguna dari token yang telah diverifikasi
 
   if (!nama) {
     return res.status(400).json({ error: "nama is required" });
   }
 
-  const query = "INSERT INTO ketebalan (nama) VALUES ($1) RETURNING *";
-  const values = [nama];
+  const query = "INSERT INTO ketebalan (nama , created_by) VALUES ($1, $2) RETURNING *";
+  const values = [nama, userId];
 
   try {
     const result = await db.query(query, values);
@@ -110,13 +112,14 @@ const getKetebalan = async (req, res) => {
 // Fungsi API untuk menambahkan pola
 const addPola = async (req, res) => {
   const { nama } = req.body;
+  const userId = req.user.userId; // ID pengguna dari token yang telah diverifikasi
 
   if (!nama) {
     return res.status(400).json({ error: "nama is required" });
   }
 
-  const query = "INSERT INTO pola (nama) VALUES ($1) RETURNING *";
-  const values = [nama];
+  const query = "INSERT INTO pola (nama, created_by) VALUES ($1, $2) RETURNING *";
+  const values = [nama, userId];
 
   try {
     const result = await db.query(query, values);

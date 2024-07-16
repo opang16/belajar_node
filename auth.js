@@ -36,7 +36,11 @@ const login = async (req, res) => {
       return res.status(401).json({ error: 'Invalid password' });
     }
 
-    const token = jwt.sign({ userId: user.rows[0].id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign(
+      { userId: user.rows[0].id },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRATION }  // Gunakan variabel lingkungan untuk masa aktif token
+    );
     res.json({ message: 'Login successful', token });
   } catch (error) {
     console.error('Error logging in:', error);
